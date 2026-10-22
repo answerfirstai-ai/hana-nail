@@ -9,12 +9,16 @@ SETS=[('hana_05','Cream French, gold bands','Cream-yellow French tips with paint
  ('hana_07','Hot pink chrome','Long stilettos in hot pink chrome.')]
 PAL={k:palette(k) for k,_,_ in SETS}
 # detail crops of the same photo (real pixels, never upscaled); boxes are fractions of the source
-CROPS={'hana_05':[(0,.1,.5,.75),(.45,.15,1,.7),(.05,.15,.4,.55)],'hana_04':[(.05,0,.7,.5),(.25,0,.75,.35),(.45,0,1,.45)],'hana_02':[(.25,.2,.55,.55),(.5,.2,.8,.55),(.2,.15,.8,.6)],
- 'hana_03':[(0,.25,.55,.75),(.45,.2,1,.7),(.25,.55,.85,1)],'hana_08':[(.5,.05,1,.5),(.35,.05,.85,.5),(.05,.05,.55,.5)],'hana_06':[(.1,.15,.65,.6),(.4,.2,1,.7),(.15,.45,.6,.85)],'hana_07':[(.15,0,.75,.45),(0,.4,.6,.9),(.4,.35,1,.85)]}
+CROPS={'hana_05':[(0,.05,.5,.45),(.5,.15,1,.55),(.15,.08,.4,.4)],'hana_04':[(.1,.62,.8,.88),(.55,.42,.95,.68),(.45,.15,.95,.5)],'hana_02':[(.25,.2,.55,.55),(.5,.2,.8,.55),(.2,.15,.8,.6)],
+ 'hana_03':[(.02,.34,.45,.6),(.55,.33,.95,.6),(.12,.45,.48,.72)],'hana_08':[(.5,.05,1,.5),(.35,.05,.85,.5),(.05,.05,.55,.5)],'hana_06':[(.1,.15,.65,.6),(.4,.2,1,.7),(.4,.12,1,.4)],'hana_07':[(.15,0,.75,.45),(0,.4,.6,.9),(.4,.35,1,.85)]}
 FR={}
+T0={'hana_03':(0,.38,1,.7)}
 for k,_,_ in SETS:
-  FR[k]=[export(k,[260,400,640],name=k+'-t0')]+[export(k,[260,400],crop=c,name=f'{k}-t{i+1}') for i,c in enumerate(CROPS[k])]
+  FR[k]=[export(k,[260,400,640],crop=T0.get(k),name=k+'-t0')]+[export(k,[260,400],crop=c,name=f'{k}-t{i+1}') for i,c in enumerate(CROPS[k])]
 HERO=export('hana_05',[800,1200,1600,2000,2600,3175])
+FEAT={k:export(k,[640,960,1440]) for k in ['hana_08']}
+# warm texture: the stucco wall from hana_05 (top-left), darkened, real pixels
+_w=Image.open(SP+'hana_05.jpg').convert('RGB');_w=_w.crop((0,0,int(_w.width*.35),int(_w.height*.12))).resize((800,int(800*_w.height*.12/(_w.width*.35))));from PIL import ImageEnhance as _E;_w=_E.Brightness(_E.Color(_w).enhance(.35)).enhance(.42);_r,_g,_b=_w.split();_w=Image.merge('RGB',(_r.point(lambda v:min(255,v+14)),_g.point(lambda v:v+6),_b));_w.save(OUT+'wall.webp',quality=70)
 PREV={k:export(k,[480,720,960]) for k,_,_ in SETS}
 NAVY='#2B2D31'
 LD={"@context":"https://schema.org","@type":"NailSalon","@id":SITE+"#salon","name":NAME,"alternateName":KO,"url":SITE,"telephone":"+1-213-905-9015","image":SITE+"assets/img/og.jpg",
@@ -41,7 +45,7 @@ def page(path,title,desc,body,cur='',extra=''):
 <script src="{B}assets/js/site.js" defer></script></body></html>'''
 dot=lambda c,cls='sw':f'<span class="{cls}" style="--c:{c}"></span>'
 img=lambda d,alt,sizes,lazy=True,fp=False:pic(d,alt,sizes,lazy=lazy,fp=fp)
-hero_img=f'<picture><source type="image/avif" srcset="{", ".join(f"{B}assets/img/w/hana_05-{w}.avif {w}w" for w in HERO["ws"])}" sizes="(max-width:760px) 100vw, 66vw"><img src="{B}assets/img/w/hana_05-1600.webp" srcset="{", ".join(f"{B}assets/img/w/hana_05-{w}.webp {w}w" for w in HERO["ws"])}" sizes="(max-width:760px) 100vw, 66vw" width="1600" height="{round(1600*HERO["h"]/HERO["w"])}" alt="Two hands with cream-yellow French tips, painted flowers, crystals and gold bands, held against a grey stucco wall in daylight." fetchpriority="high" decoding="async"></picture>'
+hero_img=f'<picture><source type="image/avif" srcset="{", ".join(f"{B}assets/img/w/hana_05-{w}.avif {w}w" for w in HERO["ws"])}" sizes="(max-width:760px) 150vw, 74vw"><img src="{B}assets/img/w/hana_05-1600.webp" srcset="{", ".join(f"{B}assets/img/w/hana_05-{w}.webp {w}w" for w in HERO["ws"])}" sizes="(max-width:760px) 150vw, 74vw" width="1600" height="{round(1600*HERO["h"]/HERO["w"])}" alt="Two hands with cream-yellow French tips, painted flowers, crystals and gold bands, held against a grey stucco wall in daylight." fetchpriority="high" decoding="async"></picture>'
 def run(i,k,n,d,first=False):
   fr=FR[k]; out=f'<div class="run" data-k="{k}"><p class="run-t">{n}</p><div class="frames">'
   for j,f in enumerate(fr):
@@ -49,27 +53,27 @@ def run(i,k,n,d,first=False):
   return out+'</div></div>'
 runs=''.join(run(i,k,n,d) for i,(k,n,d) in enumerate(SETS))
 home=f'''<section class="hero" aria-labelledby="h1">
-<h1 id="h1">HaNa Nail <span lang="ko">하나네일</span></h1>
-<div class="band">
-<p class="lead">Nail sets by appointment in suite #228, Koreatown. Every one is photographed in daylight and posted to {IGH}.</p>
-<div><p class="lbl">Book</p><p>Appointment only. The salon's Instagram bio says text or call <a href="{TEL}">{PHONE}</a>.</p></div>
-<div><p class="lbl">Listings mention</p><ul><li>Gel manicure</li><li>Gel-X extensions</li><li>Nail art</li><li>Pedicure</li><li>Lashes</li></ul></div>
-<div><p class="lbl">Where</p><p>4157 5th St #228<br>Los Angeles 90020</p><p><a href="{B}visit/">Hours and directions</a></p></div>
-<div class="band-cta"><a class="b b-acc" href="{TEL}">Call to book</a><a class="tl" href="{IG}" target="_blank" rel="noopener">See every set on Instagram<span class="sr"> (opens Instagram)</span></a></div>
-</div>
-<div class="sheet-top"><figure class="big">{hero_img}<figcaption>Cream French, gold bands</figcaption></figure>
-<div class="first-runs">{run(0,*SETS[0],first=True)}{run(1,*SETS[1])}</div></div></section>
-<section class="sheet" id="sets" aria-labelledby="sets-h"><h2 id="sets-h">Seven recent sets, frame by frame</h2>
-<p class="sheet-p">Each set is the full photo plus close crops of the same picture. Tap any frame to open the post.</p>
-<div class="runs">{''.join(run(i,k,n,d) for i,(k,n,d) in enumerate(SETS[2:],2))}</div></section>
+<figure class="big">{hero_img}<figcaption>Cream French, gold bands · Photo: {IGH}</figcaption></figure>
+<div class="h-col"><h1 id="h1">HaNa Nail <span lang="ko">하나네일</span></h1>
+<p class="lead">Nail sets by appointment in suite #228, Koreatown. Recent work is on {IGH}.</p>
+<div class="h-cta"><a class="b b-acc" href="{TEL}">Call {PHONE}</a><a class="tl" href="{IG}" target="_blank" rel="noopener">See every set on Instagram<span class="sr"> (opens Instagram)</span></a></div>
+<div class="facts"><div><p class="lbl">Book</p><p>Appointment only. The salon's Instagram bio says text or call.</p></div>
+<div><p class="lbl">Listings mention</p><p>Gel manicure, Gel-X extensions, nail art, pedicure, lashes</p></div>
+<div><p class="lbl">Where</p><p>4157 5th St #228, Los Angeles 90020 · <a href="{B}visit/">Hours and directions</a></p></div></div></div></section>
+<section class="feat" id="sets" aria-labelledby="f-h"><figure class="f-big">{img(FEAT['hana_08'],"Lilac stilettos with sculpted bows against a blue-grey wall. Photo from @hananail.la","(max-width:760px) 92vw, 46vw")}</figure>
+<div class="f-txt"><h2 id="f-h">Lilac, 3D bows</h2><p>Long stilettos in flat lilac with sculpted bows, one of the most recent sets on {IGH}.</p><div class="pal">{"".join(dot(c) for c in PAL['hana_08'])}</div>
+<div class="f-fr">{"".join(f'<a class="fr" href="{POST["hana_08"]}" target="_blank" rel="noopener" style="--r:{f["w"]/f["h"]:.3f}">{img(f,"Lilac, 3D bows, detail. Photo from @hananail.la","(max-width:760px) 30vw, 200px")}</a>' for f in FR['hana_08'][1:])}</div></div></section>
+<section class="sheet" aria-labelledby="sets-h"><h2 id="sets-h">The contact sheet</h2>
+<p class="sheet-p">Six more sets, each as the full photo and close crops of the same picture. Tap a frame to open the post.</p>
+<div class="cs">{''.join(run(i,k,n,d) for i,(k,n,d) in enumerate(SETS) if k!='hana_08')}</div></section>
 <section class="pals" id="palettes" aria-labelledby="pal-h"><div class="pal-list"><h2 id="pal-h">The palette of each set</h2>
 <p class="pal-p">Five colors sampled from each photo. Point at or tap a set to see it.</p>
-<ol class="rows">{''.join(f'<li><button type="button" class="row" data-k="{k}" aria-controls="pv" aria-pressed="{"true" if k=="hana_08" else "false"}"><span class="rn">{dot(PAL[k][2],"dot")}{n}</span><span class="rv">{"".join(dot(c) for c in PAL[k])}</span></button><div class="inl">{img(PREV[k],n+". "+d,"(max-width:760px) 90vw, 1px")}</div></li>' for i,(k,n,d) in enumerate(SETS))}</ol></div>
-<figure class="pv" id="pv" aria-live="polite">{''.join(f'<div class="pv-i{" on" if k=="hana_08" else ""}" data-k="{k}">{img(PREV[k],n+". "+d,"(max-width:760px) 1px, min(36vw, 480px)")}<figcaption><b>{n}</b> {d}<span class="hexes">{" ".join(PAL[k])}</span></figcaption></div>' for i,(k,n,d) in enumerate(SETS))}</figure></section>
+<ol class="rows">{''.join(f'<li><button type="button" class="row" data-k="{k}" aria-controls="pv" aria-pressed="{"true" if k=="hana_07" else "false"}"><span class="rn">{dot(PAL[k][2],"dot")}{n}</span><span class="rv">{"".join(dot(c) for c in PAL[k])}</span></button><div class="inl">{img(PREV[k],n+". "+d,"(max-width:760px) 90vw, 1px")}</div></li>' for i,(k,n,d) in enumerate(SETS))}</ol></div>
+<figure class="pv" id="pv" aria-live="polite">{''.join(f'<div class="pv-i{" on" if k=="hana_07" else ""}" data-k="{k}">{img(PREV[k],n+". "+d,"(max-width:760px) 1px, min(36vw, 480px)")}<figcaption><b>{n}</b> {d}</figcaption></div>' for i,(k,n,d) in enumerate(SETS))}</figure></section>
 <section class="contact" aria-labelledby="c-h"><h2 id="c-h" class="sr">Book a set</h2><p class="c-s">Bring a photo or an idea. Book a time by calling, or by text as the salon's bio says.</p>
 <div class="c-img">{img(FR['hana_06'][2],"Cherries and bows, detail. Photo from @hananail.la","160px")}</div>
 <div class="c-q"><p class="q">Ready for a set?</p><p><a href="{TEL}">Call {PHONE}</a></p><p><a href="{IG}" target="_blank" rel="noopener">Message {IGH}<span class="sr"> (opens Instagram)</span></a></p><p class="soft">Suite #228, 4157 5th St, Koreatown. Listed hours Mon-Sat; call to confirm.</p></div></section>'''
-PRE=f'<link rel="preload" as="image" type="image/avif" imagesrcset="{", ".join(f"{B}assets/img/w/hana_05-{w}.avif {w}w" for w in HERO["ws"])}" imagesizes="(max-width:760px) 100vw, 66vw" fetchpriority="high">'
+PRE=f'<link rel="preload" as="image" type="image/avif" imagesrcset="{", ".join(f"{B}assets/img/w/hana_05-{w}.avif {w}w" for w in HERO["ws"])}" imagesizes="(max-width:760px) 150vw, 74vw" fetchpriority="high">'
 H=[("Monday","9 AM – 7 PM"),("Tuesday","9 AM – 7 PM"),("Wednesday","9 AM – 7 PM"),("Thursday","9 AM – 7 PM"),("Friday","9 AM – 7 PM"),("Saturday","9 AM – 6 PM"),("Sunday","Closed")]
 visit=f'''<section class="v" aria-labelledby="h1"><h1 id="h1">Suite #228, 4157 5th St</h1>
 <div class="v-g"><div><p class="lead">HaNa Nail is inside the building at 4157 5th St, Los Angeles 90020, in Koreatown. Ask about parking when you book.</p>
