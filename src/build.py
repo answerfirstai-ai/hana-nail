@@ -41,7 +41,7 @@ def page(path,title,desc,body,cur='',extra=''):
 <script src="{B}assets/js/site.js" defer></script></body></html>'''
 dot=lambda c,cls='sw':f'<span class="{cls}" style="--c:{c}"></span>'
 img=lambda d,alt,sizes,lazy=True,fp=False:pic(d,alt,sizes,lazy=lazy,fp=fp)
-hero_img=f'<picture><source type="image/avif" srcset="{", ".join(f"{B}assets/img/w/hana_05-{w}.avif {w}w" for w in HERO["ws"])}" sizes="(max-width:760px) 100vw, 58vw"><img src="{B}assets/img/w/hana_05-1600.webp" srcset="{", ".join(f"{B}assets/img/w/hana_05-{w}.webp {w}w" for w in HERO["ws"])}" sizes="(max-width:760px) 100vw, 58vw" width="1600" height="{round(1600*HERO["h"]/HERO["w"])}" alt="Two hands with cream-yellow French tips, painted flowers, crystals and gold bands, held against a grey stucco wall in daylight." fetchpriority="high" decoding="async"></picture>'
+hero_img=f'<picture><source type="image/avif" srcset="{", ".join(f"{B}assets/img/w/hana_05-{w}.avif {w}w" for w in HERO["ws"])}" sizes="(max-width:760px) 100vw, 66vw"><img src="{B}assets/img/w/hana_05-1600.webp" srcset="{", ".join(f"{B}assets/img/w/hana_05-{w}.webp {w}w" for w in HERO["ws"])}" sizes="(max-width:760px) 100vw, 66vw" width="1600" height="{round(1600*HERO["h"]/HERO["w"])}" alt="Two hands with cream-yellow French tips, painted flowers, crystals and gold bands, held against a grey stucco wall in daylight." fetchpriority="high" decoding="async"></picture>'
 def run(i,k,n,d,first=False):
   fr=FR[k]; out=f'<div class="run" data-k="{k}"><p class="run-t">{n}</p><div class="frames">'
   for j,f in enumerate(fr):
@@ -69,7 +69,7 @@ home=f'''<section class="hero" aria-labelledby="h1">
 <section class="contact" aria-labelledby="c-h"><h2 id="c-h" class="sr">Book a set</h2><p class="c-s">Bring a photo or an idea. Book a time by calling, or by text as the salon's bio says.</p>
 <div class="c-img">{img(FR['hana_06'][2],"Cherries and bows, detail. Photo from @hananail.la","160px")}</div>
 <div class="c-q"><p class="q">Ready for a set?</p><p><a href="{TEL}">Call {PHONE}</a></p><p><a href="{IG}" target="_blank" rel="noopener">Message {IGH}<span class="sr"> (opens Instagram)</span></a></p><p class="soft">Suite #228, 4157 5th St, Koreatown. Listed hours Mon-Sat; call to confirm.</p></div></section>'''
-PRE=f'<link rel="preload" as="image" type="image/avif" imagesrcset="{", ".join(f"{B}assets/img/w/hana_05-{w}.avif {w}w" for w in HERO["ws"])}" imagesizes="(max-width:760px) 100vw, 58vw" fetchpriority="high">'
+PRE=f'<link rel="preload" as="image" type="image/avif" imagesrcset="{", ".join(f"{B}assets/img/w/hana_05-{w}.avif {w}w" for w in HERO["ws"])}" imagesizes="(max-width:760px) 100vw, 66vw" fetchpriority="high">'
 H=[("Monday","9 AM – 7 PM"),("Tuesday","9 AM – 7 PM"),("Wednesday","9 AM – 7 PM"),("Thursday","9 AM – 7 PM"),("Friday","9 AM – 7 PM"),("Saturday","9 AM – 6 PM"),("Sunday","Closed")]
 visit=f'''<section class="v" aria-labelledby="h1"><h1 id="h1">Suite #228, 4157 5th St</h1>
 <div class="v-g"><div><p class="lead">HaNa Nail is inside the building at 4157 5th St, Los Angeles 90020, in Koreatown. Ask about parking when you book.</p>
