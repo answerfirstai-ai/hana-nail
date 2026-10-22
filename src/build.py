@@ -29,34 +29,39 @@ def page(path,title,desc,body,cur='',extra=''):
 <style>{FONTS}</style><link rel="stylesheet" href="{B}assets/css/site.css">
 <script type="application/ld+json">{json.dumps(LD,ensure_ascii=False)}</script></head><body>
 <a class="skip" href="#main">Skip to content</a>
-<header class="nav"><div class="nav-in"><a class="mark" href="{B}" aria-label="{NAME} home">HaNa Nail <span lang="ko">{KO}</span></a>
+<header class="nav"><div class="nav-in"><a class="mark" href="{B}" aria-label="HaNa Nail 하나네일, home">HaNa Nail <span lang="ko">{KO}</span></a>
 <nav aria-label="Main"><div class="links">{links}</div><details class="mnav"><summary aria-label="Open menu">Menu</summary><div class="mpanel"><a href="{B}">Home</a>{links}<a href="{TEL}">Call {PHONE}</a><a href="{IG}" target="_blank" rel="noopener">Instagram {IGH}</a></div></details></nav>
 {call("btn btn-plum btn-sm nav-call","Call to book")}</div></header>
 <main id="main">{body}</main>
 <footer class="foot"><div class="wrap">{stroke}<p class="f-line">HaNa Nail · <a href="{IG}" target="_blank" rel="noopener">{IGH}</a> · <a href="{TEL}">{PHONE}</a></p>
-<p>{ADDR}, {CITY} (Koreatown). By appointment.</p><p class="hana" lang="ko" aria-hidden="true">하나</p>
-<p class="fine">The hero image is an AI-generated illustrative scene, not a photo of HaNa Nail, its studio or its work. Services and hours come from public listings; call to confirm. Demo site, © 2026 HaNa Nail.</p></div></footer>
+<p>{ADDR}, {CITY} (Koreatown). By appointment.</p>{HSVG("hana")}
+<p class="fine">The hero image is an AI-generated illustrative scene, not a photo of HaNa Nail or its studio. Nail set photos are from the salon's own Instagram, @hananail.la. Services and hours come from public listings; call to confirm. Demo site, © 2026 HaNa Nail.</p></div></footer>
 <div class="mbar" aria-label="Quick actions">{call("btn btn-plum btn-sm","Call")}{igb("btn btn-ink btn-sm")}</div>
 <script src="{B}assets/js/site.js" defer></script></body></html>'''
 hero=f'''<picture><source media="(max-width:760px)" type="image/avif" srcset="{B}assets/img/hero-m-800.avif 800w, {B}assets/img/hero-m-1200.avif 1200w, {B}assets/img/hero-m-1600.avif 1600w" sizes="100vw"><source media="(max-width:760px)" type="image/webp" srcset="{B}assets/img/hero-m-800.webp 800w, {B}assets/img/hero-m-1200.webp 1200w, {B}assets/img/hero-m-1600.webp 1600w" sizes="100vw"><source type="image/avif" srcset="{B}assets/img/hero-d-1280.avif 1280w, {B}assets/img/hero-d-1920.avif 1920w, {B}assets/img/hero-d-2880.avif 2880w" sizes="100vw"><img src="{B}assets/img/hero-d-1920.webp" srcset="{B}assets/img/hero-d-1280.webp 1280w, {B}assets/img/hero-d-1920.webp 1920w, {B}assets/img/hero-d-2880.webp 2880w" sizes="100vw" width="2880" height="1620" alt="Illustrative: one empty celadon dish and an ink stone on handmade hanji paper. AI-generated, not a photo of HaNa Nail or its work." fetchpriority="high"></picture>'''
 PRE=f'<link rel="preload" as="image" type="image/avif" media="(max-width:760px)" imagesrcset="{B}assets/img/hero-m-800.avif 800w, {B}assets/img/hero-m-1200.avif 1200w, {B}assets/img/hero-m-1600.avif 1600w" imagesizes="100vw" fetchpriority="high"><link rel="preload" as="image" type="image/avif" media="(min-width:761px)" imagesrcset="{B}assets/img/hero-d-1280.avif 1280w, {B}assets/img/hero-d-1920.avif 1920w, {B}assets/img/hero-d-2880.avif 2880w" imagesizes="100vw" fetchpriority="high">'
+import sys as _s;_s.path.insert(0,'/workspace/sites/_kit');from social import export,pic
+SP='/workspace/clients/la-salon-hana-nail/photos/social/';OUT=R+'assets/img/ig' if 'R' in globals() else 'assets/img/ig'
+PH=[('hana_05',900,None,'Milky French tips with gold flake','wide'),('hana_04',450,None,'Watercolor rainbow blush nails, short round','tall'),('hana_02',450,None,'Sheer pink almond nails with fine white bow line art','tall'),('hana_03',300,(0,.33,1,1),'Clear jelly nails with 3D bubble accents and rings',''),('hana_06',300,None,'Sheer nude nails with tiny cherries and bows','')]
+PD=[(export(SP+f+'.jpg',OUT,f,w,c),a,k) for f,w,c,a,k in PH]
+HSVG=lambda c:f'<svg class="{c}" viewBox="0 0 210 100" aria-hidden="true" focusable="false"><text x="0" y="86" font-size="96" lang="ko">하나</text></svg>'
 num=lambda n,ko:f'<p class="num" aria-hidden="true"><b>{n}</b> <span lang="ko">{ko}</span></p>'
 home=f'''<section class="hero" aria-labelledby="h1"><div class="hero-img">{hero}<span class="sweep" aria-hidden="true"></span></div><span class="ill">Illustrative scene</span>
-<p class="hana big" lang="ko" aria-hidden="true">하나</p>
+{HSVG("hana big")}
 <div class="hero-in"><h1 id="h1">HaNa Nail</h1><p class="ko-sub" lang="ko">하나네일 · 코리아타운</p>
-<p class="sub">One chair, by appointment, in suite #228 at 4157 5th St.</p>
+<p class="sub">By appointment, in suite #228 at 4157 5th St.</p>
 <div class="ctas">{call()}{igb()}</div></div></section>
-<section class="sec one" id="sets" aria-labelledby="sets-h">{num("01","하나")}<div class="wrap narrow">{stroke}
-<h2 id="sets-h">From {IGH}</h2><p class="big-line">Latest sets are on Instagram <a href="{IG}" target="_blank" rel="noopener">{IGH}</a>.</p>
-<p class="muted">This space holds one of HaNa's own sets, shown large, once the salon shares photos for the site.</p><div class="ctas">{igb("btn btn-ink","See the latest sets")}</div></div></section>
-<section class="sec one" id="book" aria-labelledby="book-h">{num("02","예약")}<div class="wrap narrow">{stroke}
-<h2 id="book-h">By appointment</h2><p class="phone"><a href="{TEL}">{PHONE}</a></p>
-<p class="big-line">The salon's Instagram bio reads "Appointment only," with this number for booking. Call, or message {IGH}.</p><div class="ctas">{call()}{igb()}</div></div></section>
-<section class="sec one" aria-labelledby="svc-h">{num("03","서비스")}<div class="wrap narrow">{stroke}
-<h2 id="svc-h">What people book</h2><p class="big-line">Listings mention gel manicures, Gel-X extensions, nail art, pedicures and lashes.</p><p class="muted">Per public listings. Call to confirm what's available and for pricing.</p></div></section>
-<section class="sec one" aria-labelledby="find-h">{num("04","찾아오기")}<div class="wrap narrow">{stroke}
-<h2 id="find-h">Suite #228, 4157 5th St</h2><p class="big-line">Inside the building; follow the suite numbers to #228.</p><p class="muted">Hours per Google listing: Mon-Fri 9 AM-7 PM, Sat 9 AM-6 PM, Sun closed. Appointment only, so call to confirm.</p>
-<div class="ctas">{dirb()}{call("btn btn-ink")}</div></div></section>'''
+<section class="sets" id="sets" aria-labelledby="sets-h"><div class="wrap">{num("01","하나")}
+<h2 id="sets-h">Recent sets</h2><p class="lede">From the salon's own Instagram, {IGH}.</p>
+<ul class="gallery">{''.join(f'<li class="{k}"><figure>{pic(B,"assets/img/ig",d,a+". Photo from the salon\'s own Instagram.",sizes=("(max-width:600px) 92vw, 900px" if k=="wide" else "(max-width:600px) 92vw, 450px" if k=="tall" else "(max-width:600px) 46vw, 300px"))}<figcaption>{a}<span>Photo: {IGH}</span></figcaption></figure></li>' for d,a,k in PD)}</ul>
+<div class="ctas">{igb("btn btn-ink","More sets on Instagram")}{call()}</div></div></section>
+<section class="sec plate" id="book" aria-labelledby="svc-h"><div class="wrap split">{num("02","서비스")}
+<div><h2 id="svc-h">Services</h2><p class="muted">Per public listings. Call to confirm what's available and for pricing. Appointment only, per the salon's Instagram bio.</p>
+<p class="phone"><a href="{TEL}">{PHONE}</a></p><div class="ctas">{call()}{igb()}</div></div>
+<ol class="dishes">{''.join(f'<li><span class="dish" aria-hidden="true"></span><b>{n}</b><span lang="ko">{k}</span></li>' for n,k in [('Gel manicure','젤 매니큐어'),('Gel-X extensions','젤엑스 연장'),('Nail art','네일 아트'),('Pedicure','페디큐어'),('Lashes','속눈썹')])}</ol></div></section>
+<section class="sec find" aria-labelledby="find-h"><div class="wrap split">{num("03","찾아오기")}
+<div><h2 id="find-h">Suite #228, 4157 5th St</h2><p>Inside the building; follow the suite numbers to #228.</p></div>
+<div><p class="muted">Hours per Google listing: Mon-Fri 9 AM-7 PM, Sat 9 AM-6 PM, Sun closed. Appointment only, so call to confirm.</p><div class="ctas">{dirb()}{call("btn btn-ink")}</div></div></div></section>'''
 rows=''.join(f'<tr><th scope="row">{d}</th><td>{h}</td></tr>' for d,h in [("Monday","9 AM - 7 PM"),("Tuesday","9 AM - 7 PM"),("Wednesday","9 AM - 7 PM"),("Thursday","9 AM - 7 PM"),("Friday","9 AM - 7 PM"),("Saturday","9 AM - 6 PM"),("Sunday","Closed")])
 visit=f'''<section class="phero"><div class="wrap narrow"><p class="eyebrow">Visit · <span lang="ko">찾아오기</span></p><h1>Suite #228</h1>
 <address>{NAME} <span lang="ko">{KO}</span><br>{ADDR}<br>{CITY} (Koreatown)<br><a href="{TEL}">{PHONE}</a></address><div class="ctas">{dirb("btn btn-plum")}{call("btn btn-ink")}{igb()}</div></div></section>
