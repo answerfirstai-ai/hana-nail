@@ -42,7 +42,7 @@ hero=f'''<picture><source media="(max-width:760px)" type="image/avif" srcset="{B
 PRE=f'<link rel="preload" as="image" type="image/avif" media="(max-width:760px)" imagesrcset="{B}assets/img/hero-m-800.avif 800w, {B}assets/img/hero-m-1200.avif 1200w, {B}assets/img/hero-m-1600.avif 1600w" imagesizes="100vw" fetchpriority="high"><link rel="preload" as="image" type="image/avif" media="(min-width:761px)" imagesrcset="{B}assets/img/hero-d-1280.avif 1280w, {B}assets/img/hero-d-1920.avif 1920w, {B}assets/img/hero-d-2880.avif 2880w" imagesizes="100vw" fetchpriority="high">'
 import sys as _s;_s.path.insert(0,'/workspace/sites/_kit');from social import export,pic
 SP='/workspace/clients/la-salon-hana-nail/photos/social/';OUT=R+'assets/img/ig' if 'R' in globals() else 'assets/img/ig'
-PH=[('hana_05',900,None,'Milky French tips with gold flake','wide'),('hana_04',450,None,'Watercolor rainbow blush nails, short round','tall'),('hana_02',450,None,'Sheer pink almond nails with fine white bow line art','tall'),('hana_03',300,(0,.33,1,1),'Clear jelly nails with 3D bubble accents and rings',''),('hana_06',300,None,'Sheer nude nails with tiny cherries and bows','')]
+PH=[('hana_05',900,None,'Milky French tips with gold flake','wide'),('hana_04',450,None,'Watercolor rainbow blush nails, short round','tall'),('hana_02',450,None,'Sheer pink almond nails with fine white bow line art','tall'),('hana_03',380,(0,.33,1,1),'Clear jelly nails with 3D bubble accents and rings',''),('hana_06',380,None,'Sheer nude nails with tiny cherries and bows','')]
 PD=[(export(SP+f+'.jpg',OUT,f,w,c),a,k) for f,w,c,a,k in PH]
 HSVG=lambda c:f'<svg class="{c}" viewBox="0 0 210 100" aria-hidden="true" focusable="false"><text x="0" y="86" font-size="96" lang="ko">하나</text></svg>'
 num=lambda n,ko:f'<p class="num" aria-hidden="true"><b>{n}</b> <span lang="ko">{ko}</span></p>'
@@ -53,7 +53,7 @@ home=f'''<section class="hero" aria-labelledby="h1"><div class="hero-img">{hero}
 <div class="ctas">{call()}{igb()}</div></div></section>
 <section class="sets" id="sets" aria-labelledby="sets-h"><div class="wrap">{num("01","하나")}
 <h2 id="sets-h">Recent sets</h2><p class="lede">From the salon's own Instagram, {IGH}.</p>
-<ul class="gallery">{''.join(f'<li class="{k}"><figure>{pic(B,"assets/img/ig",d,a+". Photo from the salon\'s own Instagram.",sizes=("(max-width:600px) 92vw, 900px" if k=="wide" else "(max-width:600px) 92vw, 450px" if k=="tall" else "(max-width:600px) 46vw, 300px"))}<figcaption>{a}<span>Photo: {IGH}</span></figcaption></figure></li>' for d,a,k in PD)}</ul>
+<ul class="gallery">{''.join(f'<li class="{k}"><figure>{pic(B,"assets/img/ig",d,a+". Photo from the salon\'s own Instagram.",sizes=("(max-width:600px) 92vw, 900px" if k=="wide" else "(max-width:760px) 92vw, 380px" if k=="tall" else "(max-width:760px) 46vw, 380px"))}<figcaption>{a}<span>Photo: {IGH}</span></figcaption></figure></li>' for d,a,k in PD)}</ul>
 <div class="ctas">{igb("btn btn-ink","More sets on Instagram")}{call()}</div></div></section>
 <section class="sec plate" id="book" aria-labelledby="svc-h"><div class="wrap split">{num("02","서비스")}
 <div><h2 id="svc-h">Services</h2><p class="muted">Per public listings. Call to confirm what's available and for pricing. Appointment only, per the salon's Instagram bio.</p>
