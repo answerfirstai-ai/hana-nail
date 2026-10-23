@@ -31,11 +31,11 @@ SETS=[ # id, tone, colour var, class, h3, fact, post
  ('cherry','dark','leaf','s5','Cherry and bow','Tiny drawn cherries and bow outlines on sheer nails.','DauKIC-lKcw'),
  ('pinkfade','dark','blush','s6','Pink fade, silver bows','A soft pink fade with a bow drawn in silver.','Dcw_qgjCTF8'),
  ('charms','dark','clay','s7','Sheer pink, crystal charms','A pale butterfly, pearls and small crystals on sheer pink nails.','DcPzitLOSsH')]
-def cap(h,f,p): return f'<div class="cap"><h3>{h}</h3><p class="fact">{f} <a href="https://www.instagram.com/p/{p}/" target="_blank" rel="noopener">Photo: @hananail.la<span class="sr"> (opens Instagram)</span></a></p></div>'
+def cap(h,f,p): return f'<div class="cap"><h3 class="kt">{h}</h3><p class="fact">{f} <a href="https://www.instagram.com/p/{p}/" target="_blank" rel="noopener">Photo: @hananail.la<span class="sr"> (opens Instagram)</span></a></p></div>'
 def art(i):
   sid,tone,col,cl,h,f,p=SETS[i]; c=cap(h,f,p)
   im={'daisy':pic('daisy-french','Butter-yellow daisy French tips with gold rings and rhinestones on almond nails','(max-width:900px) 100vw, min(53vw, 765px)'),
-   'magenta':pic('magenta-chrome','Long magenta chrome stiletto nails with a mirrored finish',S5),
+   'magenta':'<figure class="holo">'+pic('magenta-chrome','Long magenta chrome stiletto nails with a mirrored finish',S5)+pic('magenta-chrome','',S5,cls='sheen').replace('alt=""','alt="" aria-hidden="true"')+'</figure>',
    'periwinkle':pic('periwinkle-bows','Periwinkle stiletto nails with bow charms',S5,cls='a')+pic('peri-detail','Close crop of periwinkle stiletto nails, one with a small raised bow','(max-width:900px) 1px, 319px',cls='b'),
    'watercolor':pic('watercolor','Short nails with pink, blue and orange watercolor swirls',S5),
    'cherry':pic('cherry-bow','Sheer nails with a drawn cherry and bow among green leaves','(max-width:900px) 100vw, min(30vw, 428px)'),
@@ -54,7 +54,7 @@ DESC='HaNa Nail takes nail appointments by phone or Instagram in Suite 228, 4157
 dm=f'<a class="link" href="{DM}" target="_blank" rel="noopener">Message on Instagram<span class="sr"> (opens Instagram)</span></a>'
 ALT_D='Both hands with almond nails in butter-yellow daisy French tips, gold rings and rhinestones, held against a slate wall'
 hero=f'''<section class="hero">
-  <div class="say"><h1>HaNa Nail</h1><p class="lede">Nail sets in colour, by appointment, in Koreatown.</p>
+  <div class="say"><h1 class="kt">HaNa Nail</h1><p class="lede">Nail sets in colour, by appointment, in Koreatown.</p>
     <div class="acts"><a class="btn" href="{TEL}">Call {PHONE}</a>{dm}</div></div>
   <div class="mosaic" aria-label="Recent sets from @hananail.la">
     <figure class="tile t-a">{pic('daisy-french',ALT_D,'(max-width:900px) 62vw, 34vw',lazy=False,hi=True)}</figure>
