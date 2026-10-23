@@ -1,92 +1,93 @@
-# HaNa Nail rev3, taste-skill direction "contact-sheet" (seed 56053772). Concept: /workspace/vault/Design/Concepts/hana-nail.md
-exec(open('/workspace/sites/hana-nail/src/lib_head.py').read())
-SETS=[('hana_05','Cream French, gold bands','Cream-yellow French tips with painted flowers, crystals and gold bands.'),
- ('hana_04','Watercolor rainbow','Short round nails in washed pinks, yellows and blues.'),
- ('hana_02','Sheer pink, white bows','Almond nails, sheer pink with fine white bow line art.'),
- ('hana_03','Clear jelly, 3D bubbles','Clear jelly nails with raised bubble accents.'),
- ('hana_08','Lilac, 3D bows','Long stilettos in flat lilac with sculpted bows.'),
- ('hana_06','Cherries and bows','Sheer nude with tiny painted cherries and bows.'),
- ('hana_07','Hot pink chrome','Long stilettos in hot pink chrome.')]
-PAL={k:palette(k) for k,_,_ in SETS}
-# detail crops of the same photo (real pixels, never upscaled); boxes are fractions of the source
-CROPS={'hana_05':[(0,.05,.5,.45),(.5,.15,1,.55),(.15,.08,.4,.4)],'hana_04':[(.1,.62,.8,.88),(.55,.42,.95,.68),(.45,.15,.95,.5)],'hana_02':[(.25,.2,.55,.55),(.5,.2,.8,.55),(.2,.15,.8,.6)],
- 'hana_03':[(.02,.34,.45,.6),(.55,.33,.95,.6),(.12,.45,.48,.72)],'hana_08':[(.5,.05,1,.5),(.35,.05,.85,.5),(.05,.05,.55,.5)],'hana_06':[(.1,.15,.65,.6),(.4,.2,1,.7),(.4,.12,1,.4)],'hana_07':[(.15,0,.75,.45),(0,.4,.6,.9),(.4,.35,1,.85)]}
-FR={}
-T0={'hana_03':(0,.38,1,.7)}
-for k,_,_ in SETS:
-  FR[k]=[export(k,[260,400,640],crop=T0.get(k),name=k+'-t0')]+[export(k,[260,400],crop=c,name=f'{k}-t{i+1}') for i,c in enumerate(CROPS[k])]
-HERO=export('hana_05',[800,1200,1600,2000,2600,3175])
-FEAT={k:export(k,[640,960,1440]) for k in ['hana_08']}
-# warm texture: the stucco wall from hana_05 (top-left), darkened, real pixels
-_w=Image.open(SP+'hana_05.jpg').convert('RGB');_w=_w.crop((0,0,int(_w.width*.35),int(_w.height*.12))).resize((800,int(800*_w.height*.12/(_w.width*.35))));from PIL import ImageEnhance as _E;_w=_E.Brightness(_E.Color(_w).enhance(.35)).enhance(.42);_r,_g,_b=_w.split();_w=Image.merge('RGB',(_r.point(lambda v:min(255,v+14)),_g.point(lambda v:v+6),_b));_w.save(OUT+'wall.webp',quality=70)
-PREV={k:export(k,[480,720,960]) for k,_,_ in SETS}
-NAVY='#2B2D31'
-LD={"@context":"https://schema.org","@type":"NailSalon","@id":SITE+"#salon","name":NAME,"alternateName":KO,"url":SITE,"telephone":"+1-213-905-9015","image":SITE+"assets/img/og.jpg",
- "address":{"@type":"PostalAddress","streetAddress":ADDR,"addressLocality":"Los Angeles","addressRegion":"CA","postalCode":"90020","addressCountry":"US"},
- "geo":{"@type":"GeoCoordinates","latitude":34.0654932,"longitude":-118.3094635},"hasMap":MAPS,"areaServed":"Koreatown, Los Angeles","sameAs":[IG]}
-FONTS2='@font-face{font-family:"Switzer";src:url(%sassets/fonts/switzer-400.woff2) format("woff2");font-weight:400;font-display:swap}@font-face{font-family:"Switzer";src:url(%sassets/fonts/switzer-500.woff2) format("woff2");font-weight:500;font-display:swap}@font-face{font-family:"Switzer";src:url(%sassets/fonts/switzer-600.woff2) format("woff2");font-weight:600;font-display:swap}@font-face{font-family:"IBM Plex Sans KR";src:url(%sassets/fonts/plexkr-ko-400.woff2) format("woff2");font-weight:400 600;font-display:swap;unicode-range:U+AC00-D7A3}'%(B,B,B,B)
-def page(path,title,desc,body,cur='',extra=''):
-  can=SITE+path
-  a=lambda h,t:f'<a href="{B}{h}"{" aria-current=\"page\"" if cur==h else ""}>{t}</a>'
-  links=a('#sets','Sets')+a('#palettes','Palettes')+a('visit/','Visit')+f'<a href="{IG}" target="_blank" rel="noopener">Instagram<span class="sr"> (opens Instagram)</span></a>'
+# HaNa Nail Rev 5 build. Design: Desire's mock (05-mockup/output/mock.html, brief 04-brief/output/design_brief.md); Codor's job here is the live build.
+import json, html, os
+from PIL import Image
+R='/workspace/sites/hana-nail/'; B='/hana-nail/'; SITE='https://answerfirstai-ai.github.io/hana-nail/'
+SRC='/workspace/clients/la-salon-hana-nail/05-mockup/output/img/'; OUT=R+'assets/img/p/'; os.makedirs(OUT,exist_ok=True)
+TEL='tel:+12139059015'; PHONE='(213) 905-9015'; IG='https://www.instagram.com/hananail.la/'; DM='https://ig.me/m/hananail.la'
+MAPS='https://www.google.com/maps/place/HaNa+Nail+%ED%95%98%EB%82%98%EB%84%A4%EC%9D%BC/data=!4m7!3m6!1s0x80c2b9566291d6e5:0x386873d0bf8ea02e!8m2!3d34.0654932!4d-118.3094635!16s%2Fg%2F11h4nhpdqh!19sChIJ5daRYla5woARLqCOv9BzaDg'
+def exp(name,widths):
+  im=Image.open(SRC+name+'.jpg').convert('RGB'); ws=sorted({min(w,im.width) for w in widths})
+  for w in ws:
+    p=f'{OUT}{name}-{w}'
+    if not os.path.exists(p+'.avif'):
+      r=im.resize((w,round(im.height*w/im.width)),Image.LANCZOS); r.save(p+'.webp',quality=82); r.save(p+'.avif',quality=60)
+  return dict(n=name,ws=ws,w=im.width,h=im.height)
+IMG={'daisy-french':exp('daisy-french',[640,960,1280,1920,2560]),'magenta-chrome':exp('magenta-chrome',[480,800,1193]),'periwinkle-bows':exp('periwinkle-bows',[480,800,1300]),
+ 'watercolor':exp('watercolor',[480,800,1300]),'cherry-bow':exp('cherry-bow',[480,800,912]),'pink-fade-bows':exp('pink-fade-bows',[480,800,1300]),'sheer-charms':exp('sheer-charms',[480,800,1083])}
+def pic(n,alt,sizes,lazy=True,hi=False,cls='',pos=''):
+  d=IMG[n]; ss=lambda e:', '.join(f'{B}assets/img/p/{n}-{w}.{e} {w}w' for w in d['ws'])
+  mid=d['ws'][min(2,len(d['ws'])-1)]
+  at=(' fetchpriority="high"' if hi else '')+(' loading="lazy"' if lazy else '')+(f' class="{cls}"' if cls else '')
+  return f'<picture><source type="image/avif" srcset="{ss("avif")}" sizes="{sizes}"><img src="{B}assets/img/p/{n}-{mid}.webp" srcset="{ss("webp")}" sizes="{sizes}" width="{d["w"]}" height="{d["h"]}" alt="{html.escape(alt)}"{at} decoding="async"></picture>'
+S5='(max-width:900px) 100vw, min(37vw, 547px)'   # 5 columns, content capped at 1312px => never past 2x of these sources
+SETS=[ # id, tone, colour var, class, h3, fact, post
+ ('daisy','dark','yellow','s1','Butter-yellow daisy French','Hand-painted daisies and gold rings.','DbKhw6tlOfz'),
+ ('magenta','light','magenta','s3','Magenta chrome stilettos','Mirror finish on long points.','DW5tI3RDov8'),
+ ('periwinkle','dark','peri','s4','Periwinkle bow stilettos','Matte blue-violet with a tiny bow on each hand.','DWvS3gXlRlt'),
+ ('watercolor','dark','coral','s2','Watercolor swirls','Pink, blue and orange washed over short nails.','Dcwt5n0gQRf'),
+ ('cherry','dark','leaf','s5','Cherry and bow','Tiny drawn cherries and bow outlines on sheer nails.','DauKIC-lKcw'),
+ ('pinkfade','dark','blush','s6','Pink fade, silver bows','A soft pink fade with a bow drawn in silver.','Dcw_qgjCTF8'),
+ ('charms','dark','clay','s7','Sheer pink, charms','Bows and gems set in clear pink.','DcPzitLOSsH')]
+def cap(h,f,p): return f'<div class="cap"><h3>{h}</h3><p class="fact">{f} <a href="https://www.instagram.com/p/{p}/" target="_blank" rel="noopener">Photo: @hananail.la<span class="sr"> (opens Instagram)</span></a></p></div>'
+def art(i):
+  sid,tone,col,cl,h,f,p=SETS[i]; c=cap(h,f,p)
+  im={'daisy':pic('daisy-french','Butter-yellow daisy French tips with gold rings and rhinestones on almond nails','(max-width:900px) 100vw, min(53vw, 765px)'),
+   'magenta':pic('magenta-chrome','Long magenta chrome stiletto nails with a mirrored finish',S5),
+   'periwinkle':pic('periwinkle-bows','Periwinkle stiletto nails with bow charms',S5,cls='a')+pic('periwinkle-bows','Close crop of a periwinkle bow charm on a stiletto nail','(max-width:900px) 1px, min(29vw, 421px)',cls='b'),
+   'watercolor':pic('watercolor','Short nails with pink, blue and orange watercolor swirls',S5),
+   'cherry':pic('cherry-bow','Sheer nails with a drawn cherry and bow among green leaves','(max-width:900px) 100vw, min(30vw, 428px)'),
+   'pinkfade':pic('pink-fade-bows','Pink fade nails with silver bow line art on a white ground',S5),
+   'charms':pic('sheer-charms','Sheer pink almond nails with bow and gem charms, a flower ring on one hand',S5)}[sid]
+  body=(c+im) if sid in('watercolor','cherry') else (im+c)
+  return f'<article class="set {cl}" id="{sid}" style="--c:var(--{col})" data-tone="{tone}">{body}</article>'
+LABEL=['Butter-yellow daisy French','Magenta chrome stilettos','Periwinkle bow stilettos','Watercolor swirls','Cherry and bow','Pink fade with silver bows','Sheer pink with charms']
+RAIL=['yellow','magenta','peri','coral','leaf','blush','clay']; HREF=['daisy','magenta','periwinkle','watercolor','cherry','pinkfade','charms']
+rail=''.join(f'<li><a href="#{h}" style="--c:var(--{c})" aria-label="{l}"></a></li>' for h,c,l in zip(HREF,RAIL,LABEL))
+LD={"@context":"https://schema.org","@type":"NailSalon","@id":SITE+"#salon","name":"HaNa Nail","alternateName":"하나네일","url":SITE,"telephone":"+1-213-905-9015","image":SITE+"assets/img/og.jpg",
+ "address":{"@type":"PostalAddress","streetAddress":"4157 5th St, Suite 228","addressLocality":"Los Angeles","addressRegion":"CA","postalCode":"90020","addressCountry":"US"},
+ "geo":{"@type":"GeoCoordinates","latitude":34.0654932,"longitude":-118.3094635},"hasMap":MAPS,"areaServed":"Koreatown, Los Angeles","sameAs":[IG],
+ "openingHoursSpecification":[{"@type":"OpeningHoursSpecification","dayOfWeek":["Monday","Tuesday","Wednesday","Thursday","Friday"],"opens":"09:00","closes":"19:00"},{"@type":"OpeningHoursSpecification","dayOfWeek":"Saturday","opens":"09:00","closes":"18:00"}]}
+TITLE='HaNa Nail · nail sets by appointment in Koreatown, Los Angeles'
+DESC='HaNa Nail takes nail appointments by phone or Instagram in Suite 228, 4157 5th St, Koreatown, Los Angeles.'
+dm=f'<a class="link" href="{DM}" target="_blank" rel="noopener">Message on Instagram<span class="sr"> (opens Instagram)</span></a>'
+ALT_D='Both hands with almond nails in butter-yellow daisy French tips, gold rings and rhinestones, held against a slate wall'
+hero=f'''<section class="hero">
+  <div class="say"><h1>HaNa Nail</h1><p class="lede">Nail sets in colour, by appointment, in Koreatown.</p>
+    <div class="acts"><a class="btn" href="{TEL}">Call {PHONE}</a>{dm}</div></div>
+  <div class="mosaic" aria-label="Recent sets from @hananail.la">
+    <figure class="tile t-a">{pic('daisy-french',ALT_D,'(max-width:900px) 62vw, 34vw',lazy=False,hi=True)}</figure>
+    <figure class="tile t-b">{pic('magenta-chrome','Hands with long magenta chrome stiletto nails on concrete','(max-width:900px) 24vw, 14vw',lazy=False)}</figure>
+    <figure class="tile t-c">{pic('periwinkle-bows','Periwinkle stiletto nails with small bow charms against a blue-grey wall','(max-width:900px) 24vw, 14vw',lazy=False)}</figure>
+    <figure class="tile t-d">{pic('cherry-bow','Sheer nails with a small cherry and a bow, shot among green leaves','(max-width:900px) 24vw, 14vw',lazy=False)}</figure>
+    <figure class="tile t-e">{pic('watercolor','Short nails painted with pink, blue and orange watercolor swirls','(max-width:900px) 24vw, 14vw',lazy=False)}</figure>
+  </div></section>'''
+body=f'''<header class="top"><a class="mark" href="#top">HaNa Nail</a><nav aria-label="Sets by colour"><ul class="rail">{rail}</ul></nav><a class="btn" href="{TEL}">Call to book</a></header>
+<main id="top">{hero}
+<section class="cat" id="sets"><div class="cat-head"><h2>Seven sets, each in its own colour.</h2><p>Every photo is from the HaNa Instagram. Tap a swatch at the top to jump to a set.</p></div>
+{"".join(art(i) for i in range(7))}</section>
+<section class="book" id="book"><h2>By appointment, by phone.</h2><div class="body">
+<p>Call, or send a message on Instagram with the set you like and ask what is open. Gel, Gel-X, nail art, pedicures and lashes are listed on HaNa's public profiles, so ask when you call. Prices: ask when you call.</p>
+<div class="acts"><a class="btn alt" href="{TEL}">Call {PHONE}</a>{dm}<a class="link" href="{IG}" target="_blank" rel="noopener">@hananail.la<span class="sr"> (opens Instagram)</span></a></div></div></section>
+<section class="visit" id="visit"><h2>Find Suite 228.</h2>
+<div class="col a"><b>Address</b><p>4157 5th St, Suite 228<br>Los Angeles, CA 90020<br>Koreatown</p><p><a class="link" href="{MAPS}" target="_blank" rel="noopener">Directions<span class="sr"> in Google Maps (opens Google Maps)</span></a></p></div>
+<div class="col b"><b>Hours</b><p>Mon to Fri, 9 to 7<br>Sat, 9 to 6<br>Sun, closed</p><p class="note">As listed on Google. Appointment only, so call to confirm.</p></div></section></main>
+<footer>Photos: @hananail.la</footer>'''
+def page(path,body,title=TITLE,extra='',head=''):
   return f'''<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>{html.escape(title)}</title><meta name="description" content="{html.escape(desc)}"><link rel="canonical" href="{can}">
-<meta name="theme-color" content="{NAVY}"><meta property="og:type" content="website"><meta property="og:title" content="{html.escape(title)}"><meta property="og:description" content="{html.escape(desc)}"><meta property="og:url" content="{can}"><meta property="og:image" content="{SITE}assets/img/og.jpg"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta name="twitter:card" content="summary_large_image">
-<link rel="icon" href="{B}assets/img/favicon.svg" type="image/svg+xml"><link rel="preload" href="{B}assets/fonts/switzer-600.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="{B}assets/fonts/switzer-400.woff2" as="font" type="font/woff2" crossorigin>{extra}
-<style>{FONTS2}</style><link rel="stylesheet" href="{B}assets/css/site.css">
-<script type="application/ld+json">{json.dumps(LD,ensure_ascii=False)}</script></head><body>
-<a class="skip" href="#main">Skip to content</a>
-<header class="top"><a class="mark" href="{B}" aria-label="HaNa Nail 하나네일, home">HaNa Nail</a>
-<nav aria-label="Main"><div class="links">{links}</div><a class="b b-acc tel" href="{TEL}">Call {PHONE}</a>
-<details class="mnav"><summary aria-label="Open menu">Menu</summary><div class="mpanel"><a href="{B}">Home</a>{links}<a href="{TEL}">Call {PHONE}</a></div></details></nav></header>
-<main id="main">{body}</main>
-<footer class="foot"><p>HaNa Nail, Koreatown nail sets</p><p class="f-links"><a href="{TEL}">{PHONE}</a><a href="{IG}" target="_blank" rel="noopener">{IGH}</a><a href="{B}visit/">Visit</a></p><p class="f-r">© 2026 · demo site</p>
-<p class="fine">Photos: {IGH}, the salon's own Instagram. Palette colors are sampled from those photos. Services and hours are from public listings, so call to confirm.</p></footer>
+<title>{html.escape(title)}</title><meta name="description" content="{html.escape(DESC)}"><link rel="canonical" href="{SITE}{path}">
+<meta name="theme-color" content="#e4e2db"><meta property="og:type" content="website"><meta property="og:title" content="{html.escape(title)}"><meta property="og:description" content="{html.escape(DESC)}"><meta property="og:url" content="{SITE}{path}"><meta property="og:image" content="{SITE}assets/img/og.jpg"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="{B}assets/img/favicon.svg" type="image/svg+xml"><link rel="preload" href="{B}assets/fonts/librefranklin-700-latin.woff2" as="font" type="font/woff2" crossorigin><link rel="preload" href="{B}assets/fonts/sourceserif4-latin.woff2" as="font" type="font/woff2" crossorigin>{extra}
+<link rel="stylesheet" href="{B}assets/css/site.css">{head}
+<script type="application/ld+json">{json.dumps(LD,ensure_ascii=False)}</script></head><body>{body}
 <script src="{B}assets/js/site.js" defer></script></body></html>'''
-dot=lambda c,cls='sw':f'<span class="{cls}" style="--c:{c}"></span>'
-img=lambda d,alt,sizes,lazy=True,fp=False:pic(d,alt,sizes,lazy=lazy,fp=fp)
-hero_img=f'<picture><source type="image/avif" srcset="{", ".join(f"{B}assets/img/w/hana_05-{w}.avif {w}w" for w in HERO["ws"])}" sizes="(max-width:760px) 150vw, 74vw"><img src="{B}assets/img/w/hana_05-1600.webp" srcset="{", ".join(f"{B}assets/img/w/hana_05-{w}.webp {w}w" for w in HERO["ws"])}" sizes="(max-width:760px) 150vw, 74vw" width="1600" height="{round(1600*HERO["h"]/HERO["w"])}" alt="Two hands with cream-yellow French tips, painted flowers, crystals and gold bands, held against a grey stucco wall in daylight." fetchpriority="high" decoding="async"></picture>'
-def run(i,k,n,d,first=False):
-  fr=FR[k]; out=f'<div class="run" data-k="{k}"><p class="run-t">{n}</p><div class="frames">'
-  for j,f in enumerate(fr):
-    out+=f'<a class="fr" href="{POST[k]}" target="_blank" rel="noopener" style="--r:{f["w"]/f["h"]:.3f}">{img(f,(n+", detail" if j else n)+". Photo from @hananail.la"+(" (opens Instagram post)" if j==0 else ""),"(max-width:760px) 44vw, 260px",lazy=not first)}</a>'
-  return out+'</div></div>'
-runs=''.join(run(i,k,n,d) for i,(k,n,d) in enumerate(SETS))
-home=f'''<section class="hero" aria-labelledby="h1">
-<figure class="big">{hero_img}<figcaption>Cream French, gold bands · Photo: {IGH}</figcaption></figure>
-<div class="h-col"><h1 id="h1">HaNa Nail <span lang="ko">하나네일</span></h1>
-<p class="lead">Nail sets by appointment in suite #228, Koreatown. Recent work is on {IGH}.</p>
-<div class="h-cta"><a class="b b-acc" href="{TEL}">Call {PHONE}</a><a class="tl" href="{IG}" target="_blank" rel="noopener">See every set on Instagram<span class="sr"> (opens Instagram)</span></a></div>
-<div class="facts"><div><p class="lbl">Book</p><p>Appointment only. The salon's Instagram bio says text or call.</p></div>
-<div><p class="lbl">Listings mention</p><p>Gel manicure, Gel-X extensions, nail art, pedicure, lashes</p></div>
-<div><p class="lbl">Where</p><p>4157 5th St #228, Los Angeles 90020 · <a href="{B}visit/">Hours and directions</a></p></div></div></div></section>
-<section class="feat" id="sets" aria-labelledby="f-h"><figure class="f-big">{img(FEAT['hana_08'],"Lilac stilettos with sculpted bows against a blue-grey wall. Photo from @hananail.la","(max-width:760px) 92vw, 46vw")}</figure>
-<div class="f-txt"><h2 id="f-h">Lilac, 3D bows</h2><p>Long stilettos in flat lilac with sculpted bows, one of the most recent sets on {IGH}.</p><div class="pal">{"".join(dot(c) for c in PAL['hana_08'])}</div>
-<div class="f-fr">{"".join(f'<a class="fr" href="{POST["hana_08"]}" target="_blank" rel="noopener" style="--r:{f["w"]/f["h"]:.3f}">{img(f,"Lilac, 3D bows, detail. Photo from @hananail.la","(max-width:760px) 30vw, 200px")}</a>' for f in FR['hana_08'][1:])}</div></div></section>
-<section class="sheet" aria-labelledby="sets-h"><h2 id="sets-h">The contact sheet</h2>
-<p class="sheet-p">Six more sets, each as the full photo and close crops of the same picture. Tap a frame to open the post.</p>
-<div class="cs">{''.join(run(i,k,n,d) for i,(k,n,d) in enumerate(SETS) if k!='hana_08')}</div></section>
-<section class="pals" id="palettes" aria-labelledby="pal-h"><div class="pal-list"><h2 id="pal-h">The palette of each set</h2>
-<p class="pal-p">Five colors sampled from each photo. Point at or tap a set to see it.</p>
-<ol class="rows">{''.join(f'<li><button type="button" class="row" data-k="{k}" aria-controls="pv" aria-pressed="{"true" if k=="hana_07" else "false"}"><span class="rn">{dot(PAL[k][2],"dot")}{n}</span><span class="rv">{"".join(dot(c) for c in PAL[k])}</span></button><div class="inl">{img(PREV[k],n+". "+d,"(max-width:760px) 90vw, 1px")}</div></li>' for i,(k,n,d) in enumerate(SETS))}</ol></div>
-<figure class="pv" id="pv" aria-live="polite">{''.join(f'<div class="pv-i{" on" if k=="hana_07" else ""}" data-k="{k}">{img(PREV[k],n+". "+d,"(max-width:760px) 1px, min(36vw, 480px)")}<figcaption><b>{n}</b> {d}</figcaption></div>' for i,(k,n,d) in enumerate(SETS))}</figure></section>
-<section class="contact" aria-labelledby="c-h"><h2 id="c-h" class="sr">Book a set</h2><p class="c-s">Bring a photo or an idea. Book a time by calling, or by text as the salon's bio says.</p>
-<div class="c-img">{img(FR['hana_06'][2],"Cherries and bows, detail. Photo from @hananail.la","160px")}</div>
-<div class="c-q"><p class="q">Ready for a set?</p><p><a href="{TEL}">Call {PHONE}</a></p><p><a href="{IG}" target="_blank" rel="noopener">Message {IGH}<span class="sr"> (opens Instagram)</span></a></p><p class="soft">Suite #228, 4157 5th St, Koreatown. Listed hours Mon-Sat; call to confirm.</p></div></section>'''
-PRE=f'<link rel="preload" as="image" type="image/avif" imagesrcset="{", ".join(f"{B}assets/img/w/hana_05-{w}.avif {w}w" for w in HERO["ws"])}" imagesizes="(max-width:760px) 150vw, 74vw" fetchpriority="high">'
-H=[("Monday","9 AM – 7 PM"),("Tuesday","9 AM – 7 PM"),("Wednesday","9 AM – 7 PM"),("Thursday","9 AM – 7 PM"),("Friday","9 AM – 7 PM"),("Saturday","9 AM – 6 PM"),("Sunday","Closed")]
-visit=f'''<section class="v" aria-labelledby="h1"><h1 id="h1">Suite #228, 4157 5th St</h1>
-<div class="v-g"><div><p class="lead">HaNa Nail is inside the building at 4157 5th St, Los Angeles 90020, in Koreatown. Ask about parking when you book.</p>
-<p class="v-cta"><a class="b b-acc" href="{DIR}" target="_blank" rel="noopener">Get directions<span class="sr"> (opens Google Maps)</span></a><a class="tl" href="{TEL}">Call {PHONE}</a></p>
-<figure class="v-img">{img(PREV['hana_08'],"Lilac stilettos with sculpted bows against a blue-grey wall. Photo from @hananail.la","(max-width:760px) 92vw, 480px",lazy=False)}</figure></div>
-<div><h2>Listed hours</h2><ul class="hrs">{''.join(f'<li><span>{d}</span><span>{h}</span></li>' for d,h in H)}</ul>
-<p class="soft">Per Google and Yahoo listings. Appointment only, so call to confirm a time.</p><p><a href="{MAPS}" target="_blank" rel="noopener">Open in Google Maps<span class="sr"> (opens Google Maps)</span></a></p></div></div></section>'''
-nf=f'<section class="v"><h1>Page not found</h1><p class="lead">That page doesn\'t exist.</p><p class="v-cta"><a class="b b-acc" href="{B}">Back home</a><a class="tl" href="{TEL}">Call {PHONE}</a></p></section>'
-open(R+'index.html','w').write(page('','HaNa Nail 하나네일 | Nail Sets by Appointment, Koreatown LA',"HaNa Nail, suite #228 at 4157 5th St in Koreatown, Los Angeles. Nail sets by appointment: call (213) 905-9015 or see @hananail.la.",home,'',PRE))
+d=IMG['daisy-french']
+pre=f'<link rel="preload" as="image" type="image/avif" imagesrcset="{", ".join(f"{B}assets/img/p/daisy-french-{w}.avif {w}w" for w in d["ws"])}" imagesizes="(max-width:900px) 62vw, 34vw" fetchpriority="high">'
+open(R+'index.html','w').write(page('',body,extra=pre))
+# the old /visit/ URL is live: keep it as a redirect to the Visit band
 os.makedirs(R+'visit',exist_ok=True)
-open(R+'visit/index.html','w').write(page('visit/','Hours & Directions | HaNa Nail, Koreatown LA','HaNa Nail is in suite #228 at 4157 5th St, Los Angeles 90020. Listed hours Mon-Sat; appointment only. Call (213) 905-9015.',visit,'visit/'))
-open(R+'404.html','w').write(page('404.html','Page not found | HaNa Nail','Page not found.',nf).replace('<link rel="canonical"','<meta name="robots" content="noindex"><link rel="x-canonical"'))
-open(R+'sitemap.xml','w').write('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'+''.join(f'<url><loc>{SITE}{p}</loc><lastmod>2026-10-22</lastmod></url>' for p in ['','visit/'])+'</urlset>')
+open(R+'visit/index.html','w').write(f'<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Visit HaNa Nail</title><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="canonical" href="{SITE}"><meta name="robots" content="noindex"><meta http-equiv="refresh" content="0;url={B}#visit"></head><body><p><a href="{B}#visit">Visit HaNa Nail: address and hours</a></p></body></html>')
+nf=f'<header class="top"><a class="mark" href="{B}">HaNa Nail</a><span></span><a class="btn" href="{TEL}">Call to book</a></header><main><section class="book"><h2>That page is not here.</h2><div class="body"><div class="acts"><a class="btn alt" href="{B}">Back to the sets</a></div></div></section></main>'
+open(R+'404.html','w').write(page('404.html',nf,title='Page not found | HaNa Nail').replace('<link rel="canonical"','<meta name="robots" content="noindex"><link rel="x-canonical"'))
+open(R+'sitemap.xml','w').write(f'<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"><url><loc>{SITE}</loc><lastmod>2026-10-23</lastmod></url></urlset>')
 open(R+'robots.txt','w').write(f'User-agent: *\nAllow: /\nSitemap: {SITE}sitemap.xml\n'); open(R+'.nojekyll','w').write('')
-im=Image.open(SP+'hana_05.jpg').convert('RGB'); W,Hh=im.size; ch=int(W*630/1200); im.crop((0,(Hh-ch)//2,W,(Hh-ch)//2+ch)).resize((1200,630),Image.LANCZOS).save(R+'assets/img/og.jpg',quality=84)
-json.dump(PAL,open(R+'src/palettes.json','w'),indent=1); print('ok')
+print('built')

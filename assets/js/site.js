@@ -1,14 +1,24 @@
-(()=>{const d=document.querySelector('.mnav');if(d){d.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>d.open=false));
-document.addEventListener('keydown',e=>{if(e.key==='Escape'&&d.open){d.open=false;d.querySelector('summary').focus()}})}
-// signature: index with preview (palette rows -> one fixed frame; inline on phones)
-const rows=[...document.querySelectorAll('.row')],pv=[...document.querySelectorAll('.pv-i')];
-const show=k=>{rows.forEach(r=>r.setAttribute('aria-pressed',r.dataset.k===k));pv.forEach(p=>p.classList.toggle('on',p.dataset.k===k))};
-rows.forEach(r=>{r.addEventListener('click',()=>show(r.dataset.k));r.addEventListener('mouseenter',()=>matchMedia('(hover:hover)').matches&&show(r.dataset.k));r.addEventListener('focus',()=>show(r.dataset.k))});
-// entrances: only for elements below the fold; heading, text, picture staggered
-if(matchMedia('(prefers-reduced-motion: reduce)').matches||!('IntersectionObserver'in window))return;
-document.documentElement.classList.add('js');
-const groups=[...document.querySelectorAll('.feat,.sheet,.pals,.contact,.v-g,.cs .run')];
-const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.querySelectorAll('.pre').forEach(x=>x.classList.add('in'));io.unobserve(e.target)}}),{rootMargin:'0px 0px -8% 0px'});
-groups.forEach(g=>{if(g.getBoundingClientRect().top<innerHeight)return;[...g.querySelectorAll(':scope > h2, :scope > p, :scope > .pal-list > *, :scope > div:not(.runs), :scope > figure, .rows > li, .fr')].forEach((x,i)=>{x.classList.add('pre');x.style.setProperty('--dl',Math.min(i,8)*70+'ms')});io.observe(g)});
-const reveal=()=>document.querySelectorAll('.pre').forEach(x=>x.classList.add('in'));
-addEventListener('hashchange',reveal);if(location.hash)reveal();addEventListener('beforeprint',reveal);})();
+(function(){
+  var d=document,root=d.documentElement,reduce=matchMedia('(prefers-reduced-motion:reduce)').matches;
+  if(!reduce)root.classList.add('js');
+  var sets=[].slice.call(d.querySelectorAll('.set')),links=[].slice.call(d.querySelectorAll('.rail a')),top=d.querySelector('.top');
+  // the header ground follows the set under the 35% line (instant under reduced motion; the CSS transition is gated)
+  function activate(el){
+    links.forEach(function(a){a.setAttribute('aria-current',el&&a.getAttribute('href')==='#'+el.id?'true':'false')});
+    if(el){top.style.setProperty('--hc',getComputedStyle(el).backgroundColor);top.style.setProperty('--hi',el.dataset.tone==='light'?'#fff':'#24241f')}
+    else{top.style.removeProperty('--hc');top.style.removeProperty('--hi')}
+  }
+  var ticking=false;
+  function tick(){ticking=false;var line=innerHeight*0.35,cur=null;sets.forEach(function(s){var r=s.getBoundingClientRect();if(r.top<=line&&r.bottom>line)cur=s});activate(cur)}
+  function req(){if(!ticking){ticking=true;requestAnimationFrame(tick)}}
+  addEventListener('scroll',req,{passive:true});addEventListener('resize',req);tick();
+  // photographs open once with a clip reveal; anything already in view, jumped to, or printed shows at once
+  if(!reduce&&'IntersectionObserver' in window){
+    var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}})},{threshold:.12});
+    sets.forEach(function(s){io.observe(s)});
+    addEventListener('hashchange',function(){var t=d.querySelector(location.hash||'#none');if(t&&t.classList.contains('set'))t.classList.add('in')});
+    addEventListener('beforeprint',function(){sets.forEach(function(s){s.classList.add('in')})});
+  }else sets.forEach(function(s){s.classList.add('in')});
+  // Esc closes anything open (the design has no menu; kept for any <details> added later)
+  d.addEventListener('keydown',function(e){if(e.key==='Escape'){var o=d.querySelector('details[open]');if(o)o.removeAttribute('open')}});
+})();
