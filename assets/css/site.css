@@ -73,7 +73,7 @@ h2{font:700 var(--step-head)/.95 "Libre Franklin",sans-serif;letter-spacing:-.03
 .s1 img{grid-column:1/8;aspect-ratio:6/5}.s1 .cap{grid-column:9/13;padding-bottom:8px}
 .s2{align-items:start}.s2 .cap{grid-column:1/6;grid-row:1;padding-top:8px}.s2 img{grid-column:8/13;grid-row:1;aspect-ratio:3/4}
 .s3 img{grid-column:3/8;aspect-ratio:3/4}.s3 .cap{grid-column:8/13;padding-bottom:8px}
-.s4 img.a{grid-column:1/6;grid-row:1;aspect-ratio:4/5}.s4 img.b{grid-column:6/9;grid-row:1;align-self:end;aspect-ratio:634/1080}.s4 .cap{grid-column:9/13;grid-row:1;padding-bottom:8px}
+.s4 img.a{grid-column:1/6;grid-row:1;aspect-ratio:4/5}.s4 img.b{grid-column:6/9;grid-row:1;align-self:end;aspect-ratio:655/1080}.s4 .cap{grid-column:9/13;grid-row:1;padding-bottom:8px}
 .s5{align-items:center}.s5 .cap{grid-column:1/6}.s5 img{grid-column:7/11;aspect-ratio:3/4;margin-top:6vw}
 .s6 img{grid-column:2/7;aspect-ratio:1}.s6 .cap{grid-column:8/13;align-self:center}
 .s7 img{grid-column:2/5;width:min(100%,270px);aspect-ratio:542/419;justify-self:start}.s7 .cap{grid-column:7/13;padding-bottom:8px}

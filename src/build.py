@@ -16,7 +16,7 @@ def exp(name,widths,top=0,out=None,box=None,src=None):
       r=im.resize((w,round(im.height*w/im.width)),Image.LANCZOS); r.save(p+'.webp',quality=82); r.save(p+'.avif',quality=60)
   return dict(n=name,ws=ws,w=im.width,h=im.height)
 IMG={'daisy-french':exp('daisy-french',[640,960,1280,1920,2560]),'magenta-chrome':exp('magenta-chrome',[480,800,1193]),'periwinkle-bows':exp('periwinkle-bows',[480,800,1300]),
- 'watercolor':exp('watercolor',[480,800,1300]),'cherry-bow':exp('cherry-bow',[480,800,912]),'pink-fade-bows':exp('pink-fade-bows',[480,800,1300]),'peri-detail':exp('hana_08',[400,634],out='peri-detail',box=(0.50,0.22,0.94,0.82),src='/workspace/clients/la-salon-hana-nail/photos/social/'),'sheer-charms':exp('hana_03',[400,542],out='charms-hand',box=(0.5,0.27,1.0,0.58),src='/workspace/clients/la-salon-hana-nail/photos/social/')}
+ 'watercolor':exp('watercolor',[480,800,1300]),'cherry-bow':exp('cherry-bow',[480,800,912]),'pink-fade-bows':exp('pink-fade-bows',[480,800,1300]),'peri-detail':exp('hana_08',[400,655],out='peri-detail',box=(0.50,0.22,0.955,0.82),src='/workspace/clients/la-salon-hana-nail/photos/social/'),'sheer-charms':exp('hana_03',[400,542],out='charms-hand',box=(0.5,0.27,1.0,0.58),src='/workspace/clients/la-salon-hana-nail/photos/social/')}
 def pic(n,alt,sizes,lazy=True,hi=False,cls='',pos=''):
   d=IMG[n]; ss=lambda e:', '.join(f'{B}assets/img/p/{d['n']}-{w}.{e} {w}w' for w in d['ws'])
   mid=d['ws'][min(2,len(d['ws'])-1)]
