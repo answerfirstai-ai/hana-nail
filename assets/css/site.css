@@ -68,14 +68,11 @@ h2{font:700 var(--step-head)/.95 "Libre Franklin",sans-serif;letter-spacing:-.03
 .set .fact{font-size:var(--step-body);margin-top:14px;max-width:30ch}
 .set .fact a{font-weight:600;text-underline-offset:4px;text-decoration-thickness:2px}
 .set img{width:100%;height:auto;object-fit:cover;border-radius:6px}
-.holo{position:relative;margin:0;overflow:hidden;border-radius:6px;--x:-30%}
-.set .holo img{position:absolute;inset:0;width:100%;height:100%;border-radius:0;object-fit:cover}
-.set .holo .sheen{filter:hue-rotate(-55deg) saturate(1.25) brightness(1.08);clip-path:polygon(var(--x) 0,calc(var(--x) + 22%) 0,calc(var(--x) - 8%) 100%,calc(var(--x) - 30%) 100%)}
-@media (prefers-reduced-motion:reduce){.sheen{display:none}}
+.reveal{clip-path:inset(0 0 0 0)}
 /* five different compositions */
 .s1 img{grid-column:1/8;aspect-ratio:6/5}.s1 .cap{grid-column:9/13;padding-bottom:8px}
 .s2{align-items:start}.s2 .cap{grid-column:1/6;grid-row:1;padding-top:8px}.s2 img{grid-column:8/13;grid-row:1;aspect-ratio:3/4}
-.s3 .holo{grid-column:3/8;aspect-ratio:3/4}.s3 .cap{grid-column:8/13;padding-bottom:8px}
+.s3 img{grid-column:3/8;aspect-ratio:3/4}.s3 .cap{grid-column:8/13;padding-bottom:8px}
 .s4 img.a{grid-column:1/6;grid-row:1;aspect-ratio:4/5}.s4 img.b{grid-column:6/9;grid-row:1;align-self:end;aspect-ratio:655/1080}.s4 .cap{grid-column:9/13;grid-row:1;padding-bottom:8px}
 .s5{align-items:center}.s5 .cap{grid-column:1/6}.s5 img{grid-column:7/11;aspect-ratio:3/4;margin-top:6vw}
 .s6 img{grid-column:2/7;aspect-ratio:1}.s6 .cap{grid-column:8/13;align-self:center}
@@ -108,8 +105,8 @@ footer{padding:0 var(--pad) 48px;font-size:var(--step-small);color:var(--muted)}
   .tile{animation:rise .7s cubic-bezier(.2,.7,.2,1) both}
   .t-b{animation-delay:.08s}.t-c{animation-delay:.16s}.t-d{animation-delay:.24s}.t-e{animation-delay:.32s}
   @keyframes rise{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:none}}
-  .js .set img:not(.holo img),.js .set .holo{clip-path:inset(0 0 100% 0);transition:clip-path .9s cubic-bezier(.2,.7,.2,1)}
-  .js .set.in img:not(.holo img),.js .set.in .holo{clip-path:inset(0 0 0 0)}
+  .js .set img{clip-path:inset(0 0 100% 0);transition:clip-path .9s cubic-bezier(.2,.7,.2,1)}
+  .js .set.in img{clip-path:inset(0 0 0 0)}
 }
 
 @media (max-width:900px){
@@ -126,10 +123,10 @@ footer{padding:0 var(--pad) 48px;font-size:var(--step-small);color:var(--muted)}
   .cat-head>*,.set>*,.book>*,.visit>*{grid-column:1/-1 !important;grid-row:auto !important;margin-top:0}
   .set{gap:20px}
   .set img{width:100%;margin:0 !important;grid-column:1/-1 !important;grid-row:auto !important}
-  .s3 .holo{aspect-ratio:4/5}.s1 img{aspect-ratio:6/5}.s2 img,.s4 img.a,.s5 img{aspect-ratio:4/5}.s6 img{aspect-ratio:1}
+  .s1 img{aspect-ratio:6/5}.s2 img,.s3 img,.s4 img.a,.s5 img{aspect-ratio:4/5}.s6 img{aspect-ratio:1}
   .s4 img.b{display:none}
   .s7 img{aspect-ratio:542/419;width:min(100%,270px)}
   .set .cap{padding:0 !important}
 }
 
-@media print{.js .set img:not(.holo img),.js .set .holo{clip-path:none!important}.kt .w>span{transform:none!important;animation:none!important}.sheen{display:none}.tile{animation:none!important}.top{position:static}}
+@media print{.js .set img{clip-path:none!important}.kt .w>span{transform:none!important;animation:none!important}.tile{animation:none!important}.top{position:static}}

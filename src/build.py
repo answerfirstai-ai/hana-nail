@@ -35,7 +35,7 @@ def cap(h,f,p): return f'<div class="cap"><h3 class="kt">{h}</h3><p class="fact"
 def art(i):
   sid,tone,col,cl,h,f,p=SETS[i]; c=cap(h,f,p)
   im={'daisy':pic('daisy-french','Butter-yellow daisy French tips with gold rings and rhinestones on almond nails','(max-width:900px) 100vw, min(53vw, 765px)'),
-   'magenta':'<figure class="holo">'+pic('magenta-chrome','Long magenta chrome stiletto nails with a mirrored finish',S5)+pic('magenta-chrome','',S5,cls='sheen').replace('alt=""','alt="" aria-hidden="true"')+'</figure>',
+   'magenta':pic('magenta-chrome','Long magenta chrome stiletto nails with a mirrored finish',S5),
    'periwinkle':pic('periwinkle-bows','Periwinkle stiletto nails with bow charms',S5,cls='a')+pic('peri-detail','Close crop of periwinkle stiletto nails, one with a small raised bow','(max-width:900px) 1px, 319px',cls='b'),
    'watercolor':pic('watercolor','Short nails with pink, blue and orange watercolor swirls',S5),
    'cherry':pic('cherry-bow','Sheer nails with a drawn cherry and bow among green leaves','(max-width:900px) 100vw, min(30vw, 428px)'),

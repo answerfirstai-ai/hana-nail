@@ -21,13 +21,6 @@
   }else sets.forEach(function(s){s.classList.add('in')});
   // kinetic type: each headline rises out of one mask (per-word inline-block masks made the inspector flag ragged-edges, so the mask wraps the whole headline) (text stays readable without script; hidden start state lives only in CSS under no-preference)
   d.querySelectorAll('.kt').forEach(function(h){var t=h.textContent.trim();h.setAttribute('aria-label',t);h.innerHTML='<span class="w" aria-hidden="true"><span>'+t+'</span></span>'});
-  // holographic sheen on the chrome photo: pointer on desktop, scroll position on phones; no listeners under reduced motion
-  var holo=d.querySelector('.holo');
-  if(holo&&!reduce){
-    var setx=function(t){holo.style.setProperty('--x',(t*150-20)+'%')},hq=false;
-    holo.addEventListener('pointermove',function(e){var r=holo.getBoundingClientRect();setx((e.clientX-r.left)/r.width)});
-    addEventListener('scroll',function(){if(hq)return;hq=true;requestAnimationFrame(function(){hq=false;var r=holo.getBoundingClientRect();if(r.bottom>0&&r.top<innerHeight)setx(Math.min(1,Math.max(0,1-r.top/innerHeight)))})},{passive:true});
-  }
   // Esc closes anything open (the design has no menu; kept for any <details> added later)
   d.addEventListener('keydown',function(e){if(e.key==='Escape'){var o=d.querySelector('details[open]');if(o)o.removeAttribute('open')}});
 })();
