@@ -76,7 +76,7 @@ h2{font:700 var(--step-head)/.95 "Libre Franklin",sans-serif;letter-spacing:-.03
 .s4 img.a{grid-column:1/6;aspect-ratio:4/5}.s4 img.b{grid-column:6/9;aspect-ratio:3/5;margin-bottom:10vw;object-position:60% 70%}.s4 .cap{grid-column:9/13;padding-bottom:8px}
 .s5{align-items:center}.s5 .cap{grid-column:1/6}.s5 img{grid-column:7/11;aspect-ratio:3/4;margin-top:6vw}
 .s6 img{grid-column:2/7;aspect-ratio:1}.s6 .cap{grid-column:8/13;align-self:center}
-.s7 img{grid-column:1/6;aspect-ratio:1083/948}.s7 .cap{grid-column:7/13;padding-bottom:8px}
+.s7 img{grid-column:1/6;aspect-ratio:1083/664}.s7 .cap{grid-column:7/13;padding-bottom:8px}
 
 /* booking and visit */
 .book{background:var(--accent);color:var(--accent-ink);padding:clamp(56px,9vw,128px) var(--pad);display:grid;grid-template-columns:repeat(12,1fr);gap:28px var(--g)}
@@ -119,7 +119,7 @@ footer{padding:0 var(--pad) 48px;font-size:var(--step-small);color:var(--muted)}
   .set img{width:100%;margin:0 !important;grid-column:1/-1 !important;grid-row:auto !important}
   .s1 img{aspect-ratio:6/5}.s2 img,.s3 img,.s4 img.a,.s5 img{aspect-ratio:4/5}.s6 img{aspect-ratio:1}
   .s4 img.b{display:none}
-  .s7 img{aspect-ratio:1083/948}
+  .s7 img{aspect-ratio:1083/664}
   .set .cap{padding:0 !important}
 }
 

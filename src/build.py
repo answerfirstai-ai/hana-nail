@@ -5,20 +5,22 @@ R='/workspace/sites/hana-nail/'; B='/hana-nail/'; SITE='https://answerfirstai-ai
 SRC='/workspace/clients/la-salon-hana-nail/05-mockup/output/img/'; OUT=R+'assets/img/p/'; os.makedirs(OUT,exist_ok=True)
 TEL='tel:+12139059015'; PHONE='(213) 905-9015'; IG='https://www.instagram.com/hananail.la/'; DM='https://ig.me/m/hananail.la'
 MAPS='https://www.google.com/maps/place/HaNa+Nail+%ED%95%98%EB%82%98%EB%84%A4%EC%9D%BC/data=!4m7!3m6!1s0x80c2b9566291d6e5:0x386873d0bf8ea02e!8m2!3d34.0654932!4d-118.3094635!16s%2Fg%2F11h4nhpdqh!19sChIJ5daRYla5woARLqCOv9BzaDg'
-def exp(name,widths):
-  im=Image.open(SRC+name+'.jpg').convert('RGB'); ws=sorted({min(w,im.width) for w in widths})
+def exp(name,widths,top=0,out=None):
+  im=Image.open(SRC+name+'.jpg').convert('RGB')
+  if top: im=im.crop((0,int(im.height*top),im.width,im.height))  # drop the car-interior strip (top 30%) of the sheer-charms photo
+  name=out or name; ws=sorted({min(w,im.width) for w in widths})
   for w in ws:
     p=f'{OUT}{name}-{w}'
     if not os.path.exists(p+'.avif'):
       r=im.resize((w,round(im.height*w/im.width)),Image.LANCZOS); r.save(p+'.webp',quality=82); r.save(p+'.avif',quality=60)
   return dict(n=name,ws=ws,w=im.width,h=im.height)
 IMG={'daisy-french':exp('daisy-french',[640,960,1280,1920,2560]),'magenta-chrome':exp('magenta-chrome',[480,800,1193]),'periwinkle-bows':exp('periwinkle-bows',[480,800,1300]),
- 'watercolor':exp('watercolor',[480,800,1300]),'cherry-bow':exp('cherry-bow',[480,800,912]),'pink-fade-bows':exp('pink-fade-bows',[480,800,1300]),'sheer-charms':exp('sheer-charms',[480,800,1083])}
+ 'watercolor':exp('watercolor',[480,800,1300]),'cherry-bow':exp('cherry-bow',[480,800,912]),'pink-fade-bows':exp('pink-fade-bows',[480,800,1300]),'sheer-charms':exp('sheer-charms',[480,800,1083],top=0.30,out='sheer-charms-tight')}
 def pic(n,alt,sizes,lazy=True,hi=False,cls='',pos=''):
-  d=IMG[n]; ss=lambda e:', '.join(f'{B}assets/img/p/{n}-{w}.{e} {w}w' for w in d['ws'])
+  d=IMG[n]; ss=lambda e:', '.join(f'{B}assets/img/p/{d['n']}-{w}.{e} {w}w' for w in d['ws'])
   mid=d['ws'][min(2,len(d['ws'])-1)]
   at=(' fetchpriority="high"' if hi else '')+(' loading="lazy"' if lazy else '')+(f' class="{cls}"' if cls else '')
-  return f'<picture><source type="image/avif" srcset="{ss("avif")}" sizes="{sizes}"><img src="{B}assets/img/p/{n}-{mid}.webp" srcset="{ss("webp")}" sizes="{sizes}" width="{d["w"]}" height="{d["h"]}" alt="{html.escape(alt)}"{at} decoding="async"></picture>'
+  return f'<picture><source type="image/avif" srcset="{ss("avif")}" sizes="{sizes}"><img src="{B}assets/img/p/{d['n']}-{mid}.webp" srcset="{ss("webp")}" sizes="{sizes}" width="{d["w"]}" height="{d["h"]}" alt="{html.escape(alt)}"{at} decoding="async"></picture>'
 S5='(max-width:900px) 100vw, min(37vw, 547px)'   # 5 columns, content capped at 1312px => never past 2x of these sources
 SETS=[ # id, tone, colour var, class, h3, fact, post
  ('daisy','dark','yellow','s1','Butter-yellow daisy French','Hand-painted daisies and gold rings.','DbKhw6tlOfz'),
@@ -27,7 +29,7 @@ SETS=[ # id, tone, colour var, class, h3, fact, post
  ('watercolor','dark','coral','s2','Watercolor swirls','Pink, blue and orange washed over short nails.','Dcwt5n0gQRf'),
  ('cherry','dark','leaf','s5','Cherry and bow','Tiny drawn cherries and bow outlines on sheer nails.','DauKIC-lKcw'),
  ('pinkfade','dark','blush','s6','Pink fade, silver bows','A soft pink fade with a bow drawn in silver.','Dcw_qgjCTF8'),
- ('charms','dark','clay','s7','Sheer pink, charms','Bows and gems set in clear pink.','DcPzitLOSsH')]
+ ('charms','dark','clay','s7','Sheer pink, charms','Gems set in clear pink.','DcPzitLOSsH')]
 def cap(h,f,p): return f'<div class="cap"><h3>{h}</h3><p class="fact">{f} <a href="https://www.instagram.com/p/{p}/" target="_blank" rel="noopener">Photo: @hananail.la<span class="sr"> (opens Instagram)</span></a></p></div>'
 def art(i):
   sid,tone,col,cl,h,f,p=SETS[i]; c=cap(h,f,p)
@@ -37,7 +39,7 @@ def art(i):
    'watercolor':pic('watercolor','Short nails with pink, blue and orange watercolor swirls',S5),
    'cherry':pic('cherry-bow','Sheer nails with a drawn cherry and bow among green leaves','(max-width:900px) 100vw, min(30vw, 428px)'),
    'pinkfade':pic('pink-fade-bows','Pink fade nails with silver bow line art on a white ground',S5),
-   'charms':pic('sheer-charms','Sheer pink almond nails with bow and gem charms, a flower ring on one hand',S5)}[sid]
+   'charms':pic('sheer-charms','Two hands held up with sheer pink nails set with gem charms, a flower-shaped ring on one hand','(max-width:900px) 100vw, min(37vw, 547px)')}[sid]
   body=(c+im) if sid in('watercolor','cherry') else (im+c)
   return f'<article class="set {cl}" id="{sid}" style="--c:var(--{col})" data-tone="{tone}">{body}</article>'
 LABEL=['Butter-yellow daisy French','Magenta chrome stilettos','Periwinkle bow stilettos','Watercolor swirls','Cherry and bow','Pink fade with silver bows','Sheer pink with charms']
